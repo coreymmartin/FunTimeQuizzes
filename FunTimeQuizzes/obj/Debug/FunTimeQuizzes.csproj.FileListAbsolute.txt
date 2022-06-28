@@ -4,3 +4,9 @@ C:\Users\corey\Desktop\csharp27\FunTimeQuizzes\FunTimeQuizzes\obj\Debug\FunTimeQ
 C:\Users\corey\Desktop\csharp27\FunTimeQuizzes\FunTimeQuizzes\obj\Debug\FunTimeQuizzes.csproj.CoreCompileInputs.cache
 C:\Users\corey\Desktop\csharp27\FunTimeQuizzes\FunTimeQuizzes\obj\Debug\FunTimeQuizzes.exe
 C:\Users\corey\Desktop\csharp27\FunTimeQuizzes\FunTimeQuizzes\obj\Debug\FunTimeQuizzes.pdb
+C:\Users\corey\OneDrive\Documents\school\repos\FunTimeQuizzes\FunTimeQuizzes\bin\Debug\FunTimeQuizzes.exe
+C:\Users\corey\OneDrive\Documents\school\repos\FunTimeQuizzes\FunTimeQuizzes\bin\Debug\FunTimeQuizzes.pdb
+C:\Users\corey\OneDrive\Documents\school\repos\FunTimeQuizzes\FunTimeQuizzes\obj\Debug\FunTimeQuizzes.csproj.AssemblyReference.cache
+C:\Users\corey\OneDrive\Documents\school\repos\FunTimeQuizzes\FunTimeQuizzes\obj\Debug\FunTimeQuizzes.csproj.CoreCompileInputs.cache
+C:\Users\corey\OneDrive\Documents\school\repos\FunTimeQuizzes\FunTimeQuizzes\obj\Debug\FunTimeQuizzes.exe
+C:\Users\corey\OneDrive\Documents\school\repos\FunTimeQuizzes\FunTimeQuizzes\obj\Debug\FunTimeQuizzes.pdb

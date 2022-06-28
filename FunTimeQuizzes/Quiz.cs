@@ -74,7 +74,6 @@ namespace FunTimeQuizzes
                 case 1:
                     questionAndAnswers = $"\nWhat type of Version Control System is git?" +
                     $"\n 1: Distributed{correctLabel}" +
-                    $"\n 1: Distributed{showAnswer}" +
                     $"\n 2: Centralized" +
                     $"\n 3: Intrinsic";
                     correctAnswers.Add(1);
