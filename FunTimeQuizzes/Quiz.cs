@@ -7,14 +7,17 @@ namespace FunTimeQuizzes
 {
     public class Quiz
     {
-        private bool showAnswer = false;
-        private int numberOfAnswerOptions = 6;
-        private decimal questionsAnswered = 0;
-        private decimal redemptionsAnswered = 0;
-        private decimal correctAnswers = 0;
-        private decimal redeemedQuestions = 0;
-        private DateTime quizStart = DateTime.Now;
-        private List<int> failedQuestions = new List<int>();
+        private bool ShowAnswer = false;
+        private bool IgnoreRepeats = true;
+        private int NumberOfAnswerOptions = 6;
+        private int TotalNumberOfQuestions = 138;
+        private decimal QuestionsAnswered = 0;
+        private decimal RedemptionsAnswered = 0;
+        private decimal CorrectAnswers = 0;
+        private decimal RedeemedQuestions = 0;
+        private DateTime QuizStart = DateTime.Now;
+        private List<int> FailedQuestions = new List<int>();
+        private List<int> AnsweredQuestions = new List<int>();
 
         public Quiz()
         {
@@ -22,18 +25,18 @@ namespace FunTimeQuizzes
 
         public int GetNumFailedQuestions()
         {
-            return failedQuestions.Count;
+            return FailedQuestions.Count;
         }
 
         public void UpdateStats(string userScored)
         {
-            questionsAnswered += 1;
-            correctAnswers += (userScored == "correct") ? 1 : 0;
+            QuestionsAnswered += 1;
+            CorrectAnswers += (userScored == "correct") ? 1 : 0;
         }
         public void UpdateRedemptionStats(string userScored)
         {
-            redemptionsAnswered += 1;
-            redeemedQuestions += (userScored == "correct") ? 1 : 0;
+            RedemptionsAnswered += 1;
+            RedeemedQuestions += (userScored == "correct") ? 1 : 0;
         }
 
         public void DisplayStats(int timeout = 500)
@@ -42,10 +45,10 @@ namespace FunTimeQuizzes
             Console.Clear();
             Console.WriteLine("-----------------------------------");
             Console.WriteLine(now);
-            Console.WriteLine($"Quizzing Time: {Math.Round(Convert.ToDecimal(now.Subtract(quizStart).TotalMinutes), 2)} minutes");
-            Console.WriteLine($"Total  Questions Answered: {questionsAnswered}");
-            Console.WriteLine($"Total   Correct   Answers: {correctAnswers + redeemedQuestions}");
-            Console.WriteLine($"Overall FunTimeQuiz Score: {((questionsAnswered < 1) ? 0 : Math.Round(Convert.ToDecimal(((correctAnswers + redeemedQuestions) / questionsAnswered) * 100), 2))}%");
+            Console.WriteLine($"Quizzing Time: {Math.Round(Convert.ToDecimal(now.Subtract(QuizStart).TotalMinutes), 2)} minutes");
+            Console.WriteLine($"Total  Questions Answered: {QuestionsAnswered}");
+            Console.WriteLine($"Total   Correct   Answers: {CorrectAnswers + RedeemedQuestions}");
+            Console.WriteLine($"Overall FunTimeQuiz Score: {((QuestionsAnswered < 1) ? 0 : Math.Round(Convert.ToDecimal(((CorrectAnswers + RedeemedQuestions) / QuestionsAnswered) * 100), 2))}%");
             Console.WriteLine("-----------------------------------");
             Thread.Sleep(timeout);
         }
@@ -56,10 +59,10 @@ namespace FunTimeQuizzes
             Console.Clear();
             Console.WriteLine("-----------------------------------");
             Console.WriteLine(now);
-            Console.WriteLine($"Quizzing Time: {Math.Round(Convert.ToDecimal(now.Subtract(quizStart).TotalMinutes), 2)} minutes");
-            Console.WriteLine($"Total  Incorrect Answered: {questionsAnswered - correctAnswers}");
-            Console.WriteLine($"Total   Redeemed  Answers: {redeemedQuestions}");
-            Console.WriteLine($"Total  Redemption   Score: {Math.Round(Convert.ToDecimal((redeemedQuestions / (questionsAnswered - correctAnswers)) * 100), 2)}%");
+            Console.WriteLine($"Quizzing Time: {Math.Round(Convert.ToDecimal(now.Subtract(QuizStart).TotalMinutes), 2)} minutes");
+            Console.WriteLine($"Total  Incorrect Answered: {QuestionsAnswered - CorrectAnswers}");
+            Console.WriteLine($"Total   Redeemed  Answers: {RedeemedQuestions}");
+            Console.WriteLine($"Total  Redemption   Score: {Math.Round(Convert.ToDecimal((RedeemedQuestions / (QuestionsAnswered - CorrectAnswers)) * 100), 2)}%");
             Console.WriteLine("-----------------------------------");
             Thread.Sleep(timeout);
         }
@@ -67,7 +70,7 @@ namespace FunTimeQuizzes
         public List<int> DisplayQuestion(int num)
         {
             string questionAndAnswers;
-            string correctLabel = (showAnswer) ? " * correct * " : "";
+            string correctLabel = (ShowAnswer) ? " * correct * " : "";
             List<int> correctAnswers = new List<int>();
             switch (num)
             {
@@ -1226,7 +1229,7 @@ namespace FunTimeQuizzes
                     $"\n 3: Interface Error" +
                     $"\n 4: Runtime Error{correctLabel}" +
                     $"\n 5: Logical Error{correctLabel}";
-                    correctAnswers.Add(3);
+                    correctAnswers.Add(2);
                     correctAnswers.Add(4);
                     correctAnswers.Add(5);
                     break;
@@ -1362,11 +1365,22 @@ namespace FunTimeQuizzes
             int questionNum;
             if (forcedQuestion == 0)
             {
-                Random rand = new Random();
-                questionNum = rand.Next(1, 139);
+                bool goodOne = false;
+                if (AnsweredQuestions.Count >= TotalNumberOfQuestions)
+                    AnsweredQuestions.Clear();
+                do
+                {
+
+                    Random rand = new Random();
+                    questionNum = rand.Next(1, TotalNumberOfQuestions + 1);
+                    if (!IgnoreRepeats || !AnsweredQuestions.Contains(questionNum))
+                        goodOne = true;
+                } while (!goodOne);
             }
             else
                 questionNum = forcedQuestion;
+            if (!AnsweredQuestions.Contains(questionNum))
+                AnsweredQuestions.Add(questionNum);
             List<int> userAnswersSelected = new List<int>();
             var correctAnswerChoice = DisplayQuestion(questionNum);
             for (int i = 0; i < correctAnswerChoice.Count; i++)
@@ -1375,7 +1389,7 @@ namespace FunTimeQuizzes
                 {
                     Console.WriteLine($"please enter your answer ({i + 1} of {correctAnswerChoice.Count}) enter 0 to exit");
                     gotInt = int.TryParse(Console.ReadLine(), out userAnswerInput);
-                    acceptableInput = (gotInt && 0 <= userAnswerInput && userAnswerInput <= numberOfAnswerOptions) ? true : false;
+                    acceptableInput = (gotInt && 0 <= userAnswerInput && userAnswerInput <= NumberOfAnswerOptions) ? true : false;
                 } while (!acceptableInput);
                 userAnswersSelected.Add(userAnswerInput);
             }
@@ -1385,8 +1399,8 @@ namespace FunTimeQuizzes
             {
                 if (!correctAnswerChoice.Contains(userAnswer))
                 {
-                    if (!failedQuestions.Contains(questionNum))
-                        failedQuestions.Add(questionNum);
+                    if (!FailedQuestions.Contains(questionNum))
+                        FailedQuestions.Add(questionNum);
                     return "incorrect";
                 }
             }
@@ -1401,8 +1415,9 @@ namespace FunTimeQuizzes
             int redemptionQuestionNumber;
             do
             {
-                if (failedQuestions.Count == 0)
+                if (FailedQuestions.Count == 0)
                 {
+                    Console.Clear();
                     Console.WriteLine("you have redeemed yourself! youve answered all previously incorrect answers. great jorb!");
                     continueRedemption = false;
                     Thread.Sleep(3000);
@@ -1410,8 +1425,8 @@ namespace FunTimeQuizzes
                 else
                 {
                     DisplayRedemptionStats();
-                    redemptionQuestionIndex = rand.Next(0, failedQuestions.Count);
-                    redemptionQuestionNumber = failedQuestions[redemptionQuestionIndex];
+                    redemptionQuestionIndex = rand.Next(0, FailedQuestions.Count);
+                    redemptionQuestionNumber = FailedQuestions[redemptionQuestionIndex];
                     var userAnswer = AskQuestion(redemptionQuestionNumber);
                     if (userAnswer != "exit")
                     {
@@ -1419,9 +1434,9 @@ namespace FunTimeQuizzes
                         if (userAnswer == "correct")
                         {
                             Console.WriteLine("redemption question correct!");
-                            if (failedQuestions.Contains(redemptionQuestionNumber))
+                            if (FailedQuestions.Contains(redemptionQuestionNumber))
                             {
-                                failedQuestions.Remove(redemptionQuestionNumber);
+                                FailedQuestions.Remove(redemptionQuestionNumber);
                                 Console.WriteLine($"removing {redemptionQuestionNumber} from failedQuestions!");
                             }
                         }
@@ -1456,22 +1471,40 @@ namespace FunTimeQuizzes
             int showAnswerSelection;
             do
             {
-                userSelection = AskForInt("please select option to view/edit:\n0: cancel/return\n1: toggle showAnswer", 0,1);
+                userSelection = AskForInt("please select option to view/edit:" +
+                    "\n0: cancel/return" +
+                    "\n1: toggle showAnswer" +
+                    "\n2: update total number of questions" +
+                    "\n3: toggle repeat questions", 0);
                 switch (userSelection)
                 {
                     case 1:
-                        showAnswerSelection = AskForInt($"show answer currently set as {showAnswer}\nenter 0: set to false\nenter 1: set to true", 0, 1);
-                        showAnswer = (showAnswerSelection == 1) ? true : false;
-                        Console.WriteLine($"show answer = {showAnswer}");
-                        Thread.Sleep(500);
+                        if (AskForInt("have you already completed the quiz?\n0: no\n1: yes", 0, 1) == 1)
+                        {
+                            showAnswerSelection = AskForInt($"show answer currently set as {ShowAnswer}\nenter 0: set to false\nenter 1: set to true", 0, 1);
+                            ShowAnswer = (showAnswerSelection == 1) ? true : false;
+                            Console.WriteLine($"show answer = {ShowAnswer}");
+                        }
+                        else
+                            Console.WriteLine("you are not allowed to modify this setting");
+                        break;
+                    case 2:
+                        int updateNumQuestions = AskForInt($"current number of questions: {TotalNumberOfQuestions}.\nenter new number of questions. enter 0 to cancel", 0, 10000);
+                        if (updateNumQuestions > 0)
+                            TotalNumberOfQuestions = updateNumQuestions;
+                        Console.WriteLine($"total number of questions: {TotalNumberOfQuestions}.\n returning...");
+                        break;
+                    case 3:
+                        IgnoreRepeats = AskForInt($"ignore repeat currently: {IgnoreRepeats}\nenter 0: set false\nenter 1: set true", 0, 1) == 1;
+                        Console.WriteLine($"ignore repeat questions: {IgnoreRepeats}");
                         break;
                     case 0:
                     default:
                         Console.WriteLine("returning...");
                         updatingConfig = false;
-                        Thread.Sleep(500);
                         break;
                 }
+                Thread.Sleep(1000);
             } while (updatingConfig);
         }
 

@@ -5,7 +5,7 @@ using System.Threading;
 
 namespace FunTimeQuizzes
 {
-    internal class Program
+    public class Program
     {
         static int AskForInt(string msg = "please enter an integer", int lowerLimit = 0, int upperLimit = 1000) 
         {
@@ -54,6 +54,7 @@ namespace FunTimeQuizzes
                 }
                 else
                 {
+                    funtime.DisplayStats();
                     Console.WriteLine("see you later...\n");
                     runMain = false;
                 }
